@@ -16,7 +16,7 @@ VOID ProcessCreateRoutine(HANDLE PPID, HANDLE PID, BOOLEAN Create)
 		status = SeLocateProcessImageName(Process, &procName);
 
 	//Base 
-	EDR_EVENT event = { 0 };
+	EDR_EVENT event = {	};
 	event.Type = Create ? EdrEventProcessCreate : EdrEventProcessExit;
 	event.Pid = (ULONG)(ULONG_PTR)PID;
 	event.Ppid = (ULONG)(ULONG_PTR)PPID;
