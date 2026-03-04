@@ -11,7 +11,7 @@ UNICODE_STRING DriverName = RTL_CONSTANT_STRING(L"\\Device\\DumbEDR");
 UNICODE_STRING symLink = RTL_CONSTANT_STRING(L"\\??\\DumbEDR");
 WCHAR g_LastMsg[512] = L"No events yet\r\n";
 FAST_MUTEX g_Lock;
-EDR_EVENT g_LatestEvent = { 0 };
+EDR_EVENT g_LatestEvent = { };
 
 //Prototype functions
 VOID DriverUnload(PDRIVER_OBJECT DriverObject);
@@ -57,6 +57,17 @@ extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING Reg
 	DriverObject->MajorFunction[IRP_MJ_CLOSE] = EdrCreateClose;
 	DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = EdrDeviceControl;
 
+	DeviceObject->Flags &= ~DO_DEVICE_INITIALIZING; //Clear initializing flag
+	DriverObject->DriverUnload = DriverUnload; 
+
+	status = PsSetCreateProcessNotifyRoutine(ProcessCreateRoutine, FALSE);
+	if(!NT_SUCCESS(status))
+	{
+		DbgPrintEx(DPFLTR_IHVDRIVER_ID, DPFLTR_ERROR_LEVEL, "Failed to set process notify routine (0x%X)\n", status);
+		IoDeleteSymbolicLink(&symLink);
+		IoDeleteDevice(DeviceObject);
+		return status;
+	}
 
 	return STATUS_SUCCESS;
 }
