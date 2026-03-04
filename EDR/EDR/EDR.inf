@@ -1,0 +1,34 @@
+[Version]
+Signature="$Windows NT$"
+Class=Sample
+ClassGuid={00000000-0000-0000-0000-000000000000}
+Provider=%ProviderName%
+DriverVer=02/18/2026,1.0.0.0
+
+[Manufacturer]
+%ProviderName%=Standard,NTx86,NTamd64
+
+[Standard.NTamd64]
+%DeviceName%=InstallSection, %DeviceHardwareID%
+
+[InstallSection]
+CopyFiles=DummyCopyFiles
+
+[DestinationDirs]
+DummyCopyFiles=12
+
+[DummyCopyFiles]
+; list driver files here, e.g.
+; MyDriver.sys
+
+[SourceDisksNames]
+1 = "%DiskName%",,,
+
+[SourceDisksFiles]
+; MyDriver.sys = 1
+
+[Strings]
+ProviderName="Your Provider"
+DeviceName="Your Device"
+DeviceHardwareID="ROOT\\YourDevice"
+DiskName="Driver Files"
